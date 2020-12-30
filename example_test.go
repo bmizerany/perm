@@ -7,12 +7,13 @@ import (
 )
 
 func ExamplePerm() {
-	p := perm.NewPerm(3)
+	animals := []string{"bird", "cat", "fish"}
+	p := perm.NewPerm(len(animals))
 
 	for {
-		fmt.Print("order:")
+		fmt.Print("animals:")
 		p.Visit(func(i int) {
-			fmt.Print(" ", i)
+			fmt.Print(" ", animals[i])
 		})
 		fmt.Println()
 		if !p.Next() {
@@ -21,12 +22,12 @@ func ExamplePerm() {
 	}
 
 	// Output:
-	// order: 0 1 2
-	// order: 0 2 1
-	// order: 1 0 2
-	// order: 1 2 0
-	// order: 2 0 1
-	// order: 2 1 0
+	// animals: bird cat fish
+	// animals: bird fish cat
+	// animals: cat bird fish
+	// animals: cat fish bird
+	// animals: fish bird cat
+	// animals: fish cat bird
 }
 
 func ExampleComb() {
