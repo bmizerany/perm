@@ -20,7 +20,6 @@ package perm
 type Comb struct {
 	j int
 	f []int // "focus pointers"
-	n int
 
 	a []bool
 }
@@ -28,7 +27,6 @@ type Comb struct {
 func NewComb(n int) *Comb {
 	c := &Comb{
 		f: make([]int, n+1),
-		n: n,
 		a: make([]bool, n),
 	}
 	for i := range c.f {
@@ -40,7 +38,7 @@ func NewComb(n int) *Comb {
 func (c *Comb) Next() bool {
 	c.j = c.f[0]
 	c.f[0] = 0
-	if c.j == c.n {
+	if c.j == len(c.a) {
 		return false
 	}
 	c.f[c.j] = c.f[c.j+1]
@@ -54,5 +52,13 @@ func (c *Comb) Visit(f func(i int)) {
 		if include {
 			f(i)
 		}
+	}
+}
+
+func (c *Comb) Reset(n int) {
+	c.f = make([]int, n+1)
+	c.a = make([]bool, n)
+	for i := range c.f {
+		c.f[i] = i
 	}
 }

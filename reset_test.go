@@ -7,26 +7,41 @@ import (
 )
 
 func TestReset(t *testing.T) {
-	p := NewPerm(3)
+	type I interface {
+		Next() bool
+		Visit(func(i int))
+		Reset(int)
+	}
 
-	for i := 0; i < 3; i++ {
-		p.Reset(3)
+	tests := []struct {
+		x I
+		w string
+	}{
+		{NewPerm(0), "012.021.102.120.201.210.01.10.0.."},
+		{NewComb(0), ".0.01.1.12.012.02.2..0.01.1..0.."},
+		{NewCombPerm(0), ".0.01.10.1.12.21.012.021.102.120.201.210.02.20.2..0.01.10.1..0.."},
+	}
 
+	for _, tt := range tests {
 		var b strings.Builder
-		for {
-			p.Visit(func(i int) {
-				fmt.Fprint(&b, i)
-			})
-			fmt.Fprint(&b, ":")
-			if !p.Next() {
-				break
+		for i := 3; i >= 0; i-- {
+			p := tt.x
+
+			p.Reset(i)
+
+			for {
+				p.Visit(func(i int) {
+					fmt.Fprint(&b, i)
+				})
+				fmt.Fprint(&b, ".")
+				if !p.Next() {
+					break
+				}
 			}
+
 		}
-
-		want := `012:021:102:120:201:210:`
-
-		if got := b.String(); want != got {
-			t.Errorf("got = %v; want %v", got, want)
+		if got := b.String(); tt.w != got {
+			t.Errorf("%T: got = %v; want %v", tt.x, got, tt.w)
 		}
 	}
 }

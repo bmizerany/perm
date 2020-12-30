@@ -40,3 +40,8 @@ func (b *CombPerm) Visit(f func(i int)) {
 		f(b.v[i])
 	})
 }
+
+func (b *CombPerm) Reset(n int) {
+	b.c.Reset(n)
+	b.p.Reset(0)
+}
