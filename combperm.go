@@ -30,7 +30,7 @@ func (b *CombPerm) Next() bool {
 	b.c.Visit(func(i int) {
 		b.v = append(b.v, i)
 	})
-	b.p = NewPerm(len(b.v))
+	b.p.Reset(len(b.v))
 	return true
 }
 

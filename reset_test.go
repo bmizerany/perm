@@ -6,13 +6,13 @@ import (
 	"testing"
 )
 
-func TestReset(t *testing.T) {
-	type I interface {
-		Next() bool
-		Visit(func(i int))
-		Reset(int)
-	}
+type I interface {
+	Next() bool
+	Visit(func(i int))
+	Reset(int)
+}
 
+func TestReset(t *testing.T) {
 	tests := []struct {
 		x I
 		w string
@@ -46,33 +46,48 @@ func TestReset(t *testing.T) {
 	}
 }
 
-func TestResetAllocs(t *testing.T) {
-	const (
-		n          = 3
-		iterations = 10000
-		perms      = 6 // == 3!
-	)
-
-	var p Perm
-	var g int
-
-	allocs := testing.AllocsPerRun(iterations, func() {
-		p.Reset(n)
+func BenchmarkResetAllocs(b *testing.B) {
+	p := NewCombPerm(0)
+	for i := 0; i < b.N; i++ {
+		p.Reset(3)
 		for {
 			p.Visit(func(i int) {
-				g++
+				// nop
 			})
 			if !p.Next() {
 				break
 			}
 		}
-	})
-	if allocs > 0 {
-		t.Errorf("allocs = %f; want 0", allocs)
+	}
+}
+
+func TestResetAllocs(t *testing.T) {
+	const (
+		n          = 3
+		iterations = 10000
+	)
+
+	tests := []I{
+		NewPerm(0),
+		NewComb(0),
+		NewCombPerm(0),
 	}
 
-	w := perms * n * (iterations + 1) // == 180018 (includes warm-up run)
-	if g != w {
-		t.Errorf("g = %d; want %d", g, w)
+	for _, p := range tests {
+		allocs := int(testing.AllocsPerRun(iterations, func() {
+			p.Reset(n)
+			for {
+				p.Visit(func(i int) {
+					// nop
+				})
+				if !p.Next() {
+					break
+				}
+			}
+		}))
+		if allocs > 0 {
+			t.Errorf("%T: allocs = %d; want 0", p, allocs)
+		}
 	}
+
 }

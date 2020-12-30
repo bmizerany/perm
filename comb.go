@@ -56,8 +56,17 @@ func (c *Comb) Visit(f func(i int)) {
 }
 
 func (c *Comb) Reset(n int) {
-	c.f = make([]int, n+1)
-	c.a = make([]bool, n)
+	if n > cap(c.a) {
+		c.f = make([]int, n+1)
+		c.a = make([]bool, n)
+	} else {
+		c.f = c.f[:n+1]
+		c.a = c.a[:n]
+		for i := range c.a {
+			c.a[i] = false
+		}
+	}
+	c.j = 0
 	for i := range c.f {
 		c.f[i] = i
 	}
