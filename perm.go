@@ -1,24 +1,19 @@
 // Package perm permutes data.
 package perm
 
-// Perm generates all permutations of a given length.
+// Perm generates all permutations of a given length. The zero value is a Perm
+// for length 0.
 type Perm struct {
-	size int
-	cur  []int
+	cur []int
 }
 
 // New returns a new Perm that permutes data.
 //
 // The function assumes data is sorted.
 func NewPerm(n int) *Perm {
-	p := &Perm{
-		size: n,
-		cur:  make([]int, n),
-	}
-	for i := range p.cur {
-		p.cur[i] = i
-	}
-	return p
+	var p Perm
+	p.Reset(n)
+	return &p
 }
 
 func (p *Perm) Visit(f func(i int)) {
@@ -28,8 +23,8 @@ func (p *Perm) Visit(f func(i int)) {
 }
 
 // Next advances p to the next permutation.
-func (p Perm) Next() bool {
-	n := p.size - 1
+func (p *Perm) Next() bool {
+	n := len(p.cur) - 1
 	if n < 1 {
 		return false
 	}
@@ -50,4 +45,14 @@ func (p Perm) Next() bool {
 		l--
 	}
 	return true
+}
+
+func (p *Perm) Reset(n int) {
+	if n > cap(p.cur) {
+		p.cur = make([]int, n)
+	}
+	p.cur = p.cur[:n]
+	for i := range p.cur {
+		p.cur[i] = i
+	}
 }
