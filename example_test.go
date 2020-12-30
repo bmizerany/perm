@@ -30,11 +30,12 @@ func ExamplePerm() {
 }
 
 func ExampleComb() {
-	c := perm.NewComb(3)
+	animals := []string{"bird", "cat", "fish"}
+	c := perm.NewComb(len(animals))
 	for {
-		fmt.Print("subset:")
+		fmt.Print("animals:")
 		c.Visit(func(i int) {
-			fmt.Print(" ", i)
+			fmt.Print(" ", animals[i])
 		})
 		fmt.Println()
 
@@ -44,46 +45,48 @@ func ExampleComb() {
 	}
 
 	// Output:
-	// subset:
-	// subset: 0
-	// subset: 0 1
-	// subset: 1
-	// subset: 1 2
-	// subset: 0 1 2
-	// subset: 0 2
-	// subset: 2
+	// animals:
+	// animals: bird
+	// animals: bird cat
+	// animals: cat
+	// animals: cat fish
+	// animals: bird cat fish
+	// animals: bird fish
+	// animals: fish
 }
 
 // The empty subset is always visited first, so if
 // you need to visit all nonempty subsets, check c.Next() at the
 // beginning of the loop instead of at the end.
 func ExampleComb_nonempty() {
-	c := perm.NewComb(3)
+	animals := []string{"bird", "cat", "fish"}
+	c := perm.NewComb(len(animals))
 	for c.Next() {
-		fmt.Print("subset:")
+		fmt.Print("animals:")
 		c.Visit(func(i int) {
-			fmt.Print(" ", i)
+			fmt.Print(" ", animals[i])
 		})
 		fmt.Println()
 	}
 
 	// Output:
-	// subset: 0
-	// subset: 0 1
-	// subset: 1
-	// subset: 1 2
-	// subset: 0 1 2
-	// subset: 0 2
-	// subset: 2
+	// animals: bird
+	// animals: bird cat
+	// animals: cat
+	// animals: cat fish
+	// animals: bird cat fish
+	// animals: bird fish
+	// animals: fish
 }
 
-func ExampleBoth() {
-	b := perm.NewBoth(3)
+func ExampleCombPerm() {
+	animals := []string{"bird", "cat", "fish"}
+	b := perm.NewCombPerm(len(animals))
 
 	for {
-		fmt.Print("order:")
+		fmt.Print("animals:")
 		b.Visit(func(i int) {
-			fmt.Print(" ", i)
+			fmt.Print(" ", animals[i])
 		})
 		fmt.Println()
 		if !b.Next() {
@@ -92,22 +95,22 @@ func ExampleBoth() {
 	}
 
 	// Output:
-	// order:
-	// order: 0
-	// order: 0 1
-	// order: 1 0
-	// order: 1
-	// order: 1 2
-	// order: 2 1
-	// order: 0 1 2
-	// order: 0 2 1
-	// order: 1 0 2
-	// order: 1 2 0
-	// order: 2 0 1
-	// order: 2 1 0
-	// order: 0 2
-	// order: 2 0
-	// order: 2
+	// animals:
+	// animals: bird
+	// animals: bird cat
+	// animals: cat bird
+	// animals: cat
+	// animals: cat fish
+	// animals: fish cat
+	// animals: bird cat fish
+	// animals: bird fish cat
+	// animals: cat bird fish
+	// animals: cat fish bird
+	// animals: fish bird cat
+	// animals: fish cat bird
+	// animals: bird fish
+	// animals: fish bird
+	// animals: fish
 }
 
 func ExamplePerm_multi() {
