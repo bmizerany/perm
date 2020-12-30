@@ -1,79 +1,51 @@
-// Package perm permutates data.
+// Package perm permutes data.
 package perm
 
-import (
-	"reflect"
-	"sort"
-)
-
-// Slices returns a Perm given the provided slices and less function. Each
-// slice is mutated in step with the others according less.
-//
-// The function assumes all slices are sorted.
-//
-// The function panics if the provided interfaces are not slices, or will panic
-// on Next if all slices in slice are not of equal length.
-func Slices(less func(i, j int) bool, slice ...interface{}) Perm {
-	if len(slice) == 0 {
-		return Perm{}
-	}
-
-	swaps := make([]func(i, j int), len(slice))
-	for i := range swaps {
-		swaps[i] = reflect.Swapper(slice[i])
-	}
-
-	return Perm{
-		size: reflect.ValueOf(slice[0]).Len(),
-		swap: func(i, j int) {
-			for _, s := range swaps {
-				s(i, j)
-			}
-		},
-		less: less,
-	}
-}
-
-// Perm permutates slices.
+// Perm generates all permutations of a given length.
 type Perm struct {
 	size int
-	swap func(i, j int)
-	less func(i, j int) bool
+	cur  []int
 }
 
-// New returns a new Perm that permutates data.
+// New returns a new Perm that permutes data.
 //
 // The function assumes data is sorted.
-func New(data sort.Interface) Perm {
-	return Perm{
-		size: data.Len(),
-		swap: data.Swap,
-		less: data.Less,
+func NewPerm(n int) Perm {
+	p := Perm{
+		size: n,
+		cur:  make([]int, n),
+	}
+	for i := range p.cur {
+		p.cur[i] = i
+	}
+	return p
+}
+
+func (p *Perm) Visit(f func(i int)) {
+	for _, i := range p.cur {
+		f(i)
 	}
 }
 
-// Next mutates the underlying slice to the next permutation.  See Knuth's
-// Algorithm L.
-//
-// It does no allocate.
+// Next advances p to the next permutation.
 func (p Perm) Next() bool {
 	n := p.size - 1
 	if n < 1 {
 		return false
 	}
 	j := n - 1
-	for ; !p.less(j, j+1); j-- {
+	for ; p.cur[j] >= p.cur[j+1]; j-- {
 		if j == 0 {
 			return false
 		}
 	}
 	l := n
-	for !p.less(j, l) {
+	for p.cur[j] >= p.cur[l] {
 		l--
 	}
-	p.swap(j, l)
+	p.cur[j], p.cur[l] = p.cur[l], p.cur[j]
 	for k, l := j+1, n; k < l; {
-		p.swap(k, l)
+		p.cur[k], p.cur[l] = p.cur[l], p.cur[k]
 		k++
 		l--
 	}

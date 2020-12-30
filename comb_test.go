@@ -2,7 +2,6 @@ package perm
 
 import (
 	"fmt"
-	"sort"
 )
 
 func ExampleComb() {
@@ -59,16 +58,20 @@ func ExampleComb_withPerm() {
 	s := []int{1, 2, 3}
 	c := NewComb(len(s))
 
-	var g sort.IntSlice
+	var g []int
 	for c.Next() {
 		g := g[:0]
 		c.Visit(func(i int) {
 			g = append(g, s[i])
 		})
 
-		p := New(g)
+		p := NewPerm(len(g))
 		for {
-			fmt.Println(g)
+			fmt.Print("order:")
+			p.Visit(func(i int) {
+				fmt.Print(" ", g[i])
+			})
+			fmt.Println()
 			if !p.Next() {
 				break
 			}
@@ -76,19 +79,19 @@ func ExampleComb_withPerm() {
 	}
 
 	// Output:
-	// [1]
-	// [1 2]
-	// [2 1]
-	// [2]
-	// [2 3]
-	// [3 2]
-	// [1 2 3]
-	// [1 3 2]
-	// [2 1 3]
-	// [2 3 1]
-	// [3 1 2]
-	// [3 2 1]
-	// [1 3]
-	// [3 1]
-	// [3]
+	// order: 1
+	// order: 1 2
+	// order: 2 1
+	// order: 2
+	// order: 2 3
+	// order: 3 2
+	// order: 1 2 3
+	// order: 1 3 2
+	// order: 2 1 3
+	// order: 2 3 1
+	// order: 3 1 2
+	// order: 3 2 1
+	// order: 1 3
+	// order: 3 1
+	// order: 3
 }
