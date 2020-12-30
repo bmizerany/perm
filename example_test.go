@@ -110,4 +110,31 @@ func ExampleBoth() {
 	// order: 2
 }
 
-// TODO: include example permutating multiple slices in step.
+func ExamplePerm_multi() {
+	p := perm.NewPerm(3)
+
+	a := []byte("abc")
+	b := []string{"foo", "bar", "baz"}
+
+	for {
+		p.Visit(func(i int) {
+			fmt.Printf("%c", a[i])
+		})
+		fmt.Print(":")
+		p.Visit(func(i int) {
+			fmt.Print(" ", b[i])
+		})
+		fmt.Println()
+		if !p.Next() {
+			break
+		}
+	}
+
+	// Output:
+	// abc: foo bar baz
+	// acb: foo baz bar
+	// bac: bar foo baz
+	// bca: bar baz foo
+	// cab: baz foo bar
+	// cba: baz bar foo
+}
