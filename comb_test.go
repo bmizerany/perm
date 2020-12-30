@@ -2,6 +2,7 @@ package perm
 
 import (
 	"fmt"
+	"sort"
 )
 
 func ExampleComb() {
@@ -52,4 +53,42 @@ func ExampleComb_nonempty() {
 	// subset: 1 2 3
 	// subset: 1 3
 	// subset: 3
+}
+
+func ExampleComb_withPerm() {
+	s := []int{1, 2, 3}
+	c := NewComb(len(s))
+
+	var g sort.IntSlice
+	for c.Next() {
+		g := g[:0]
+		c.Visit(func(i int) {
+			g = append(g, s[i])
+		})
+
+		p := New(g)
+		for {
+			fmt.Println(g)
+			if !p.Next() {
+				break
+			}
+		}
+	}
+
+	// Output:
+	// [1]
+	// [1 2]
+	// [2 1]
+	// [2]
+	// [2 3]
+	// [3 2]
+	// [1 2 3]
+	// [1 3 2]
+	// [2 1 3]
+	// [2 3 1]
+	// [3 1 2]
+	// [3 2 1]
+	// [1 3]
+	// [3 1]
+	// [3]
 }
