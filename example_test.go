@@ -7,14 +7,12 @@ import (
 )
 
 func ExamplePerm() {
-	slice := []int{1, 2, 3}
-
-	p := perm.NewPerm(len(slice))
+	p := perm.NewPerm(3)
 
 	for {
 		fmt.Print("order:")
 		p.Visit(func(i int) {
-			fmt.Print(" ", slice[i])
+			fmt.Print(" ", i)
 		})
 		fmt.Println()
 		if !p.Next() {
@@ -23,21 +21,20 @@ func ExamplePerm() {
 	}
 
 	// Output:
-	// order: 1 2 3
-	// order: 1 3 2
-	// order: 2 1 3
-	// order: 2 3 1
-	// order: 3 1 2
-	// order: 3 2 1
+	// order: 0 1 2
+	// order: 0 2 1
+	// order: 1 0 2
+	// order: 1 2 0
+	// order: 2 0 1
+	// order: 2 1 0
 }
 
 func ExampleComb() {
-	s := []int{1, 2, 3}
-	c := perm.NewComb(len(s))
+	c := perm.NewComb(3)
 	for {
 		fmt.Print("subset:")
 		c.Visit(func(i int) {
-			fmt.Print(" ", s[i])
+			fmt.Print(" ", i)
 		})
 		fmt.Println()
 
@@ -48,79 +45,69 @@ func ExampleComb() {
 
 	// Output:
 	// subset:
+	// subset: 0
+	// subset: 0 1
 	// subset: 1
 	// subset: 1 2
+	// subset: 0 1 2
+	// subset: 0 2
 	// subset: 2
-	// subset: 2 3
-	// subset: 1 2 3
-	// subset: 1 3
-	// subset: 3
 }
 
 // The empty subset is always visited first, so if
 // you need to visit all nonempty subsets, check c.Next() at the
 // beginning of the loop instead of at the end.
 func ExampleComb_nonempty() {
-	s := []int{1, 2, 3}
-	c := perm.NewComb(len(s))
+	c := perm.NewComb(3)
 	for c.Next() {
 		fmt.Print("subset:")
 		c.Visit(func(i int) {
-			fmt.Print(" ", s[i])
+			fmt.Print(" ", i)
 		})
 		fmt.Println()
 	}
 
 	// Output:
+	// subset: 0
+	// subset: 0 1
 	// subset: 1
 	// subset: 1 2
+	// subset: 0 1 2
+	// subset: 0 2
 	// subset: 2
-	// subset: 2 3
-	// subset: 1 2 3
-	// subset: 1 3
-	// subset: 3
 }
 
-func ExampleComb_withPerm() {
-	s := []int{1, 2, 3}
-	c := perm.NewComb(len(s))
+func ExampleBoth() {
+	b := perm.NewBoth(3)
 
-	var g []int
-	for c.Next() {
-		g := g[:0]
-		c.Visit(func(i int) {
-			g = append(g, s[i])
+	for {
+		fmt.Print("order:")
+		b.Visit(func(i int) {
+			fmt.Print(" ", i)
 		})
-
-		p := perm.NewPerm(len(g))
-		for {
-			fmt.Print("order:")
-			p.Visit(func(i int) {
-				fmt.Print(" ", g[i])
-			})
-			fmt.Println()
-			if !p.Next() {
-				break
-			}
+		fmt.Println()
+		if !b.Next() {
+			break
 		}
 	}
 
 	// Output:
+	// order:
+	// order: 0
+	// order: 0 1
+	// order: 1 0
 	// order: 1
 	// order: 1 2
 	// order: 2 1
+	// order: 0 1 2
+	// order: 0 2 1
+	// order: 1 0 2
+	// order: 1 2 0
+	// order: 2 0 1
+	// order: 2 1 0
+	// order: 0 2
+	// order: 2 0
 	// order: 2
-	// order: 2 3
-	// order: 3 2
-	// order: 1 2 3
-	// order: 1 3 2
-	// order: 2 1 3
-	// order: 2 3 1
-	// order: 3 1 2
-	// order: 3 2 1
-	// order: 1 3
-	// order: 3 1
-	// order: 3
 }
 
 // TODO: include example permutating multiple slices in step.

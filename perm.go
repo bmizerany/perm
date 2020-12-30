@@ -10,8 +10,8 @@ type Perm struct {
 // New returns a new Perm that permutes data.
 //
 // The function assumes data is sorted.
-func NewPerm(n int) Perm {
-	p := Perm{
+func NewPerm(n int) *Perm {
+	p := &Perm{
 		size: n,
 		cur:  make([]int, n),
 	}
