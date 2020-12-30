@@ -25,14 +25,9 @@ type Comb struct {
 }
 
 func NewComb(n int) *Comb {
-	c := &Comb{
-		f: make([]int, n+1),
-		a: make([]bool, n),
-	}
-	for i := range c.f {
-		c.f[i] = i
-	}
-	return c
+	var c Comb
+	c.Reset(n)
+	return &c
 }
 
 func (c *Comb) Next() bool {
@@ -56,7 +51,7 @@ func (c *Comb) Visit(f func(i int)) {
 }
 
 func (c *Comb) Reset(n int) {
-	if n > cap(c.a) {
+	if n+1 > cap(c.f) {
 		c.f = make([]int, n+1)
 		c.a = make([]bool, n)
 	} else {

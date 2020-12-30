@@ -6,14 +6,16 @@ package perm
 // The first subset is always the empty set. To skip the empty set, call
 // Next before the first call to Visit.
 type CombPerm struct {
-	c *Comb
-	p *Perm
+	c Comb
+	p Perm
 	v []int
 }
 
 // NewCombPerm returns a new CombPerm for length n.
 func NewCombPerm(n int) *CombPerm {
-	return &CombPerm{c: NewComb(n), p: NewPerm(0)}
+	var c CombPerm
+	c.Reset(n)
+	return &c
 }
 
 // Next advances b to the next permutation.
