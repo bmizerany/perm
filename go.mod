@@ -1,4 +1,4 @@
-module perm
+module github.com/bmizerany/perm
 
 go 1.16
 
