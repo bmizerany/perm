@@ -3,7 +3,7 @@ package perm_test
 import (
 	"fmt"
 
-	"github.com/bmizerany/perm"
+	"blake.io/perm"
 )
 
 func ExamplePerm() {

@@ -6,9 +6,10 @@ import (
 	"io"
 	"log"
 	"os"
-	"perm"
 	"sort"
 	"strings"
+
+	"blake.io/perm"
 )
 
 var (
